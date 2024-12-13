@@ -1,0 +1,24 @@
+services:
+  database:
+    image: mongo:8.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: transaction_api
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+
+  data_population:
+    build:
+      context: .
+      dockerfile: ./scripts/populate_data/Dockerfile
+
+volumes:
+  mongo_data:
