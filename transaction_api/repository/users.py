@@ -7,7 +7,7 @@ from transaction_api.models.user import User, UserInput, UserOut
 from transaction_api.services.database import db_service
 
 
-async def get_user_by_id(user_id: str) -> User:
+def get_user_by_id(user_id: str) -> User:
     user = db_service.database.get_collection(User.collection_name).find_one({"user_id": user_id})
     if not user:
         raise UserDoesNotExist(user_id)
@@ -15,22 +15,22 @@ async def get_user_by_id(user_id: str) -> User:
     return User(**user)
 
 
-async def get_all_users() -> list[UserOut]:
+def get_all_users() -> list[UserOut]:
     users = db_service.database.get_collection(User.collection_name).find(
         {}, projection={"user_id": 1, "name": 1, "email": 1, "created_at": 1}
     )
     return [UserOut(**user) for user in users]
 
 
-async def user_exists(user_id: str) -> bool:
+def user_exists(user_id: str) -> bool:
     user = db_service.database.get_collection(User.collection_name).find_one(
         {"user_id": user_id}, projection={"_id": True}
     )
     return user is not None
 
 
-async def add_user(user: UserInput) -> None:
-    if await user_exists(user.user_id):
+def add_user(user: UserInput) -> None:
+    if user_exists(user.user_id):
         raise HTTPException(status_code=400, detail=f"User with id '{user.user_id}' already exists")
     db_service.database.get_collection(User.collection_name).insert_one(
         {
@@ -41,13 +41,13 @@ async def add_user(user: UserInput) -> None:
     )
 
 
-async def delete_user(user_id: str) -> None:
-    if not await user_exists(user_id):
+def delete_user(user_id: str) -> None:
+    if not user_exists(user_id):
         raise UserDoesNotExist(user_id)
     db_service.database.get_collection(User.collection_name).delete_one({"user_id": user_id})
 
 
-async def update_user_balance(user_id: str, amount: float) -> None:
+def update_user_balance(user_id: str, amount: float) -> None:
     db_service.database.get_collection(User.collection_name).update_one(
         {"user_id": user_id}, {"$inc": {"balance": amount}}
     )

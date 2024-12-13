@@ -24,8 +24,8 @@ router = APIRouter(prefix="/users", tags=["users"])
     },
     status_code=status.HTTP_201_CREATED,
 )
-async def add_user(user: UserInput):
-    await user_repo.add_user(user)
+def add_user(user: UserInput):
+    user_repo.add_user(user)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content={"success": True, "message": "User created successfully."},
@@ -33,8 +33,8 @@ async def add_user(user: UserInput):
 
 
 @router.get("")
-async def get_users() -> list[UserOut]:
-    return await user_repo.get_all_users()
+def get_users() -> list[UserOut]:
+    return user_repo.get_all_users()
 
 
 @router.get(
@@ -45,8 +45,8 @@ async def get_users() -> list[UserOut]:
         },
     },
 )
-async def get_user(user_id: str = UserId) -> UserOut:
-    return await user_repo.get_user_by_id(user_id)
+def get_user(user_id: str = UserId) -> UserOut:
+    return user_repo.get_user_by_id(user_id)
 
 
 @router.delete(
@@ -62,6 +62,6 @@ async def get_user(user_id: str = UserId) -> UserOut:
         },
     },
 )
-async def deleter_user(user_id: str = UserId) -> dict:
-    await user_repo.delete_user(user_id)
+def deleter_user(user_id: str = UserId) -> dict:
+    user_repo.delete_user(user_id)
     return {"success": True, "message": "User deleted successfully."}

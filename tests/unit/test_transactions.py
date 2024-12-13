@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime
 
 from transaction_api.models.transaction import Transaction
@@ -7,8 +6,7 @@ from .conftest import fake_db
 from .user_data import test_user_1
 
 
-@pytest.mark.asyncio
-async def test_add_transaction_success(mocker, client, fake_db):
+def test_add_transaction_success(mocker, client, fake_db):
     """
     Test the add_transaction endpoint to ensure a transaction is added successfully
     and the user's balance is updated correctly.
@@ -35,8 +33,7 @@ async def test_add_transaction_success(mocker, client, fake_db):
     mock_update_balance.assert_called_once_with({"user_id": "test123"}, {"$inc": {"balance": 100.0}})
 
 
-@pytest.mark.asyncio
-async def test_add_transaction_insufficient_balance(client, fake_db):
+def test_add_transaction_insufficient_balance(client, fake_db):
     """
     Test the add_transaction endpoint to ensure a 400 error is returned if the transaction
     would result in a negative balance.
@@ -59,8 +56,7 @@ async def test_add_transaction_insufficient_balance(client, fake_db):
     assert response.json() == {"detail": "User with id 'test123' has insufficient balance"}
 
 
-@pytest.mark.asyncio
-async def test_add_transaction_user_not_found(client, fake_db):
+def test_add_transaction_user_not_found(client, fake_db):
     """
     Test the add_transaction endpoint to ensure a 404 error is returned if the userId does not exist.
     """
@@ -79,8 +75,7 @@ async def test_add_transaction_user_not_found(client, fake_db):
     assert response.json() == {"detail": "User with id 'nonexistent' not found"}
 
 
-@pytest.mark.asyncio
-async def test_list_transactions(client, fake_db):
+def test_list_transactions(client, fake_db):
     """
     Test the list_transactions endpoint to ensure it returns transactions filtered by userId
     and optional date range.

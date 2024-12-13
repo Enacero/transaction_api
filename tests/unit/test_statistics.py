@@ -1,10 +1,7 @@
-import pytest
-
 from transaction_api.models.user import User
 
 
-@pytest.mark.asyncio
-async def test_get_account_summary_success(client, fake_db):
+def test_get_account_summary_success(client, fake_db):
     """Test retrieving account summary for a user."""
 
     user_id = "user123"

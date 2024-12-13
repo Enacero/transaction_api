@@ -16,5 +16,5 @@ router = APIRouter(prefix="/account-summary", tags=["statistics"])
         }
     },
 )
-async def get_account_summary(user_id: str = UserId) -> AccountSummary:
-    return await statistics_repo.get_account_summary(user_id)
+def get_account_summary(user_id: str = UserId) -> AccountSummary:
+    return statistics_repo.get_account_summary(user_id)

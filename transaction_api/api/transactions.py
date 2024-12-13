@@ -38,8 +38,8 @@ router = APIRouter(prefix="/transactions", tags=["transactions"])
         },
     },
 )
-async def add_transaction(transaction: TransactionInput) -> dict:
-    await transaction_repo.add_transaction(transaction)
+def add_transaction(transaction: TransactionInput) -> dict:
+    transaction_repo.add_transaction(transaction)
     return {"success": True, "message": "Transaction created successfully."}
 
 
@@ -50,7 +50,7 @@ class TransactionFilters(BaseModel):
 
 
 @router.get("")
-async def list_transactions(
+def list_transactions(
     filters: TransactionFilters = Depends(),
 ) -> list[TransactionOut]:
-    return await transaction_repo.get_all_transactions(**filters.model_dump())
+    return transaction_repo.get_all_transactions(**filters.model_dump())

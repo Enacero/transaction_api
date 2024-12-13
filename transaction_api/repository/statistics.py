@@ -16,7 +16,7 @@ class AccountSummary(BaseModel):
     )
 
 
-async def get_account_summary(user_id: str) -> AccountSummary:
+def get_account_summary(user_id: str) -> AccountSummary:
     summary = (
         db_service.database.get_collection(User.collection_name)
         .aggregate(

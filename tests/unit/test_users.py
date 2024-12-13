@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime
 from freezegun import freeze_time
 
@@ -6,8 +5,7 @@ from transaction_api.models.user import User
 from .user_data import test_user_1, test_user_1_json, test_user_2, test_user_2_json
 
 
-@pytest.mark.asyncio
-async def test_add_user_success(mocker, client, fake_db):
+def test_add_user_success(mocker, client, fake_db):
     """Test adding a new user successfully.
 
     Ensures the endpoint responds with success when a user does not already exist
@@ -34,8 +32,7 @@ async def test_add_user_success(mocker, client, fake_db):
     mock_insert.assert_called_once_with(expected_data)
 
 
-@pytest.mark.asyncio
-async def test_add_user_already_exists(client, fake_db):
+def test_add_user_already_exists(client, fake_db):
     """Test attempting to add a user that already exists.
 
     Verifies the endpoint returns a 400 error when trying to add a user
@@ -51,8 +48,7 @@ async def test_add_user_already_exists(client, fake_db):
     assert response.json() == {"detail": "User with id 'user1' already exists"}
 
 
-@pytest.mark.asyncio
-async def test_add_user_invalid_email(client):
+def test_add_user_invalid_email(client):
     """
     Test to ensure that the add_user endpoint validates the email format.
 
@@ -73,8 +69,7 @@ async def test_add_user_invalid_email(client):
     )
 
 
-@pytest.mark.asyncio
-async def test_get_users(client, fake_db):
+def test_get_users(client, fake_db):
     """Test retrieving a list of users.
 
     Ensures the endpoint returns all users from the database correctly.
@@ -92,8 +87,7 @@ async def test_get_users(client, fake_db):
     ]
 
 
-@pytest.mark.asyncio
-async def test_get_user_by_id(client, fake_db):
+def test_get_user_by_id(client, fake_db):
     """Test retrieving a user by their ID.
 
     Verifies the endpoint returns the correct user details when the user exists.
@@ -108,8 +102,7 @@ async def test_get_user_by_id(client, fake_db):
     assert response.json() == test_user_1_json
 
 
-@pytest.mark.asyncio
-async def test_get_user_not_found(client, fake_db):
+def test_get_user_not_found(client, fake_db):
     """Test retrieving a non-existent user by ID.
 
     Ensures the endpoint returns a 404 error if the user does not exist in the database.
@@ -123,8 +116,7 @@ async def test_get_user_not_found(client, fake_db):
     assert response.json() == {"detail": "User with id 'nonexistent' not found"}
 
 
-@pytest.mark.asyncio
-async def test_delete_user_success(client, fake_db):
+def test_delete_user_success(client, fake_db):
     """Test deleting an existing user.
 
     Verifies the endpoint successfully deletes a user when the user exists in the database.
@@ -139,8 +131,7 @@ async def test_delete_user_success(client, fake_db):
     assert response.json() == {"success": True, "message": "User deleted successfully."}
 
 
-@pytest.mark.asyncio
-async def test_delete_user_not_found(client, fake_db):
+def test_delete_user_not_found(client, fake_db):
     """Test deleting a non-existent user.
 
     Ensures the endpoint returns a 404 error if the user to be deleted does not exist.

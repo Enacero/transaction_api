@@ -13,8 +13,8 @@ from transaction_api.services.database import db_service
 from . import users as user_repo
 
 
-async def add_transaction(transaction: TransactionInput) -> None:
-    if not (user := await user_repo.get_user_by_id(transaction.user_id)):
+def add_transaction(transaction: TransactionInput) -> None:
+    if not (user := user_repo.get_user_by_id(transaction.user_id)):
         raise UserDoesNotExist(transaction.user_id, 400)
 
     if user.balance + transaction.amount < 0:
@@ -27,10 +27,10 @@ async def add_transaction(transaction: TransactionInput) -> None:
             db_service.database.get_collection(Transaction.collection_name).insert_one(
                 transaction.model_dump()
             )
-            await user_repo.update_user_balance(transaction.user_id, transaction.amount)
+            user_repo.update_user_balance(transaction.user_id, transaction.amount)
 
 
-async def get_all_transactions(
+def get_all_transactions(
     user_id: str, start_date: date | None = None, end_date: date | None = None
 ) -> list[TransactionOut]:
     filters = {"user_id": {"$eq": user_id}}
