@@ -239,14 +239,3 @@ To execute unit tests:
 ```bash
 tox -e 3.12
 ```
-
----
-
-## Notes
-- Use the `MONGO_DB_HOST` environment variable to specify the MongoDB host.
-- Use `Postman` or `cURL` for manual API testing.
-
----
-
-## Contact
-For further information, contact the maintainer at oleksiiypetrenko@gmail.com.
