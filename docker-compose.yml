@@ -12,13 +12,19 @@ services:
   app:
     build:
       context: .
+    environment:
+      MONGO_DB_HOST: database
     ports:
       - "8000:8000"
 
   data_population:
+    profiles:
+      - testing
     build:
       context: .
       dockerfile: ./scripts/populate_data/Dockerfile
+    environment:
+      MONGO_DB_HOST: database
 
 volumes:
   mongo_data:

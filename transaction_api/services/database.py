@@ -1,10 +1,11 @@
+from os import environ
 from pymongo import MongoClient
 
 
 class DatabaseService:
     def __init__(self):
         config = {
-            "host": "mongodb://database:27017",
+            "host": f"mongodb://{environ.get("MONGO_DB_HOST", "localhost")}:27017",
             "username": "root",
             "password": "password",
         }

@@ -1,228 +1,252 @@
 # Transaction Management System
 
 ## Overview
+This project is a **Transaction Management System** designed to manage users and their transactions. It features robust RESTful APIs implemented using **FastAPI**, dependency management with **Poetry**, and a **MongoDB** database. The project is containerized with **Docker** and orchestrated using **Docker Compose** for seamless deployment.
 
-The Transaction Management System is a RESTful API designed to handle user and transaction data with robust business logic, validation, and persistence in a MongoDB database. The application is built using FastAPI and packaged with Docker for easy deployment.
+---
+
+## Technologies Used
+- **FastAPI**: For building the RESTful APIs.
+- **Poetry**: For dependency management and packaging.
+- **MongoDB**: As the database for storing user and transaction data.
+- **Docker**: For containerizing the application.
+- **Docker Compose**: To manage multi-container setups for the application and database.
+- **Python 3.12**: As the programming language.
 
 ---
 
 ## Features
+### User Management
+- Create, retrieve, and delete users.
+- Enforce unique user IDs and validate email formats.
 
-- User management: Create, retrieve, and delete users.
-- Transaction management: Add, list, and filter transactions.
-- Account summary: Retrieve user account details, including balance and transaction count.
-- Validation: Ensures data integrity and business rules enforcement.
-- Prepackaged with Docker Compose for streamlined deployment.
+### Transaction Management
+- Add and retrieve transactions for users.
+- Prevent negative balances with server-side validation.
+- Retrieve account summaries dynamically (e.g., balance and transaction count).
 
----
-
-## Prerequisites
-
-- Docker and Docker Compose installed on your system.
 ---
 
 ## Setup Instructions
 
-### Clone Repository
+### Prerequisites
+- **Docker** and **Docker Compose** installed.
+- **Python 3.12** and **Poetry** (optional, for local setup).
 
-```bash
-git clone <repository_url>
-cd <repository_folder>
-```
-
-### Build and Run with Docker Compose
-
-1. Build the Docker images:
-
+### Running the Application with Docker
+1. Clone the repository:
    ```bash
-   docker-compose build
+   git clone https://github.com/Enacero/transaction_api.git
+   cd transaction_api
    ```
 
-2. Start the containers:
+2. Start the application:
+   ```bash
+   docker-compose up --build
+   ```
 
+3. The API server will be available at `http://localhost:8000`.
+
+4. Access the automatically generated API documentation at:
+   - Swagger UI: `http://localhost:8000/docs`
+   - ReDoc: `http://localhost:8000/redoc`
+
+### Local Development Setup (Optional)
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Enacero/transaction_api.git
+   cd transaction_api
+   ```
+
+2. Install dependencies:
+   ```bash
+   poetry install
+   ```
+
+3. Start the MongoDB instance using Docker:
+   ```bash
+   docker-compose up mongodb
+   ```
+
+4. Run the application locally:
+   ```bash
+   poetry run uvicorn app:app --reload
+   ```
+
+5. Set the `MONGO_DB_HOST` environment variable to specify the MongoDB host:
+   ```bash
+   export MONGO_DB_HOST=localhost
+   ```
+
+---
+
+## Populating the Database with Test Data
+
+To prepopulate the database with test data:
+1. Ensure the application and MongoDB are running:
    ```bash
    docker-compose up
    ```
 
-   The application will be available at `http://localhost:8000`.
+2. Use the `populate_data` service defined in `docker-compose.yml` to insert sample users and transactions:
+   ```bash
+   docker-compose run populate_data
+   ```
+
+This will load sample user and transaction data into the database for testing purposes.
 
 ---
 
-## API Documentation
+## API Endpoints
 
-The API documentation is available at `http://localhost:8000/docs`.
-
-You can explore and test the endpoints interactively using Swagger UI.
-
----
-
-## OpenAPI Specification
-
-Here is the OpenAPI specification for this project, which describes all endpoints, request bodies, and responses:
-
-### Key Endpoints
-
-#### **User Management**
-
-1. **Create User**
-
-   - **Endpoint:** `POST /users`
-   - **Request Body:**
-     ```json
-     {
-       "userId": "string",
-       "name": "string",
-       "email": "string"
-     }
-     ```
-   - **Response:**
-     ```json
-     {
-       "success": true,
-       "message": "User created successfully."
-     }
-     ```
-
-2. **Get User**
-
-   - **Endpoint:** `GET /users/{userId}`
-   - **Response:**
-     ```json
-     {
-       "userId": "string",
-       "name": "string",
-       "email": "string",
-       "createdAt": "string (ISO format)"
-     }
-     ```
-
-3. **Delete User**
-
-   - **Endpoint:** `DELETE /users/{userId}`
-   - **Response:**
-     ```json
-     {
-       "success": true,
-       "message": "User deleted successfully."
-     }
-     ```
-
-#### **Transaction Management**
-
-1. **Create Transaction**
-
-   - **Endpoint:** `POST /transactions`
-   - **Request Body:**
-     ```json
-     {
-       "transactionId": "string",
-       "userId": "string",
-       "amount": "number",
-       "timestamp": "string (ISO format)"
-     }
-     ```
-   - **Response:**
-     ```json
-     {
-       "success": true,
-       "message": "Transaction created successfully."
-     }
-     ```
-
-2. **List Transactions**
-
-   - **Endpoint:** `GET /transactions`
-   - **Query Parameters:**
-     - `userId` (required)
-     - `startDate` (optional)
-     - `endDate` (optional)
-   - **Response:**
-     ```json
-     [
-       {
-         "transactionId": "string",
-         "userId": "string",
-         "amount": "number",
-         "timestamp": "string"
-       }
-     ]
-     ```
-
-#### **Account Summary**
-
-1. **Get Account Summary**
-   - **Endpoint:** `GET /account-summary/{userId}`
-   - **Response:**
-     ```json
-     {
-       "userId": "string",
-       "currentBalance": "number",
-       "transactionCount": "number"
-     }
-     ```
-
----
-
-## Example cURL Commands
-
-### Create a User
-
+### User Management
+#### Get All Users
+**GET /users**
 ```bash
-curl -X POST http://localhost:8000/users \
-     -H "Content-Type: application/json" \
-     -d '{"userId": "user1", "name": "Alice", "email": "alice@example.com"}'
+curl -X 'GET' \
+  'http://localhost:8000/users' \
+  -H 'accept: application/json'
+```
+Response:
+```json
+[
+  {
+    "userId": "user1",
+    "name": "Alice Smith",
+    "email": "alice@example.com",
+    "createdAt": "2024-12-14T19:03:09.027930"
+  }
+]
 ```
 
-### Get User Details
-
+#### Add a User
+**POST /users**
 ```bash
-curl -X GET http://localhost:8000/users/user1
+curl -X 'POST' \
+  'http://localhost:8000/users' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "userId": "user1",
+  "name": "Alice Smith",
+  "email": "alice@example.com"
+}'
+```
+Response:
+```json
+{
+  "success": true,
+  "message": "User created successfully."
+}
 ```
 
-### Delete a User
-
+#### Get a User
+**GET /users/{userId}**
 ```bash
-curl -X DELETE http://localhost:8000/users/user1
+curl -X 'GET' \
+  'http://localhost:8000/users/user1' \
+  -H 'accept: application/json'
+```
+Response:
+```json
+{
+  "userId": "user1",
+  "name": "Alice Smith",
+  "email": "alice@example.com",
+  "createdAt": "2024-12-14T19:03:09.027930"
+}
 ```
 
-### Create a Transaction
-
+#### Delete a User
+**DELETE /users/{userId}**
 ```bash
-curl -X POST http://localhost:8000/transactions \
-     -H "Content-Type: application/json" \
-     -d '{"transactionId": "txn1", "userId": "user1", "amount": 100.50, "timestamp": "2024-12-13T10:00:00Z"}'
+curl -X 'DELETE' \
+  'http://localhost:8000/users/user1' \
+  -H 'accept: application/json'
+```
+Response:
+```json
+{
+  "success": true,
+  "message": "User deleted successfully."
+}
 ```
 
-### List Transactions
-
+### Transaction Management
+#### Add a Transaction
+**POST /transactions**
 ```bash
-curl -X GET "http://localhost:8000/transactions?userId=user1&startDate=2024-12-01&endDate=2024-12-12"
+curl -X 'POST' \
+  'http://localhost:8000/transactions' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "transactionId": "trxn123",
+  "userId": "user1",
+  "amount": 100.5,
+  "timestamp": "2024-12-14T19:03:09.027930"
+}'
+```
+Response:
+```json
+{
+  "success": true,
+  "message": "Transaction created successfully."
+}
 ```
 
-### Get Account Summary
-
+#### List Transactions
+**GET /transactions**
 ```bash
-curl -X GET http://localhost:8000/account-summary/user1
+curl -X 'GET' \
+  'http://localhost:8000/transactions?userId=user1' \
+  -H 'accept: application/json'
+```
+Response:
+```json
+[
+  {
+    "transactionId": "trxn123",
+    "userId": "user1",
+    "amount": 100.5,
+    "timestamp": "2024-12-14T19:03:09.027930"
+  }
+]
+```
+
+#### Account Summary
+**GET /account-summary/{userId}**
+```bash
+curl -X 'GET' \
+  'http://localhost:8000/account-summary/user1' \
+  -H 'accept: application/json'
+```
+Response:
+```json
+{
+  "userId": "user1",
+  "currentBalance": 100.5,
+  "transactionCount": 1
+}
 ```
 
 ---
 
-## Unit Testing
+## Testing
 
-To run the unit tests, use the following command:
-
+### Run Tests
+To execute unit tests:
 ```bash
-docker exec -it <container_id> pytest
+tox -e 3.12
 ```
-
-Ensure your container is running before executing tests.
 
 ---
 
-## Data Prepopulation
+## Notes
+- Use the `MONGO_DB_HOST` environment variable to specify the MongoDB host.
+- Use `Postman` or `cURL` for manual API testing.
 
-To prepopulate the database with sample data, use the provided script located in `scripts/prepopulate_data.py`. Execute it with the following command:
+---
 
-```bash
-docker exec -it <container_id> python scripts/prepopulate_data.py
-```
+## Contact
+For further information, contact the maintainer at oleksiiypetrenko@gmail.com.
