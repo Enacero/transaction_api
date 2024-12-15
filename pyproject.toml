@@ -14,7 +14,7 @@ target-version = ['py312']
 profile = "black"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.12"
 fastapi = {extras = ["standard"], version = "^0.115.6"}
 pymongo = "^4.10.1"
 pre-commit = "^4.0.1"
