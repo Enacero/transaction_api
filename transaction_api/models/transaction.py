@@ -30,7 +30,16 @@ class BaseTransaction(BaseModel):
 
 class TransactionInput(BaseTransaction):
     model_config = ConfigDict(
-        json_schema_extra={"examples": [{"transactionId": "trxn123", "userId": "user_id", "amount": 123}]}
+        json_schema_extra={
+            "examples": [
+                {
+                    "transactionId": "trxn123",
+                    "userId": "user_id",
+                    "amount": 123,
+                    "timestamp": "2024-12-13T14:17:25.647561",
+                }
+            ]
+        }
     )
 
 
